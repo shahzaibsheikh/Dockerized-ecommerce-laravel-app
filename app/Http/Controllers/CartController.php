@@ -30,7 +30,7 @@ class CartController extends Controller
           $taxAmount=0;
           $data= collect($cart['carts']);
           $shipping = 10;
-          $tax      = 10; //in  % percentage
+          $tax      = 10; //in percentage %
           $total    =0;
           $newdata = $data->map(function($value) use(&$subtotal){
             if(is_array($value) && isset($value['product'])) {
