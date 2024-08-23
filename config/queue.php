@@ -39,6 +39,8 @@ return [
             'table' => 'jobs',
             'queue' => 'default',
             'retry_after' => 90,
+            'timeout' => 60,
+            'memory' => 128,
             'after_commit' => false,
         ],
 

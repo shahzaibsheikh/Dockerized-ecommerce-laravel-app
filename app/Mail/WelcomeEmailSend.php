@@ -12,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 class WelcomeEmailSend extends Mailable
 {
     use Queueable, SerializesModels;
-    protected $emailData; 
+    protected $emailData;
 
     /**
      * Create a new message instance.
@@ -26,17 +26,16 @@ class WelcomeEmailSend extends Mailable
 
     public function build(){
 
-        return $this
-           ->from('khurshid.shahzaib@gmail.com','LearnVearn')
-           ->replyTo('khurshid.shahzaib@gmail.com','Reply To Email')
+        return $this->from('hi@demomailtrap.com','Shahzaib Happy Coding')
+           ->replyTo('hi@demomailtrap.com','Reply To Email')
            ->subject($this->emailData['subject'])
-           ->view('header_user')
+           ->view('mail_template.index',['name'=>$this->emailData['name']])
            ->with([
                  'tagline'=> $this->emailData['tagline']
            ]);
     }
 
-  
 
-   
+
+
 }

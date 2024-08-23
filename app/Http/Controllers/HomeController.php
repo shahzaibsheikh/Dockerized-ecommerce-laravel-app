@@ -5,11 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\Brand;
 use App\Models\Product;
 use Carbon\Carbon;
+use App\Jobs\EmailJob;
+use App\Helpers\AppHelper;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function index(Request $request){
+
+        // if(!empty(AppHelper::userState())){
+        //     $userData= AppHelper::userState();
+        //    //   Syncrnous dispatch for debugging
+        //     // EmailJob::dispatchSync($userData);
+        //       // job to dipatch through queue worker
+        //     // EmailJob::dispatch($userData);
+        // }
 
         $startDate = Carbon::now()->subMonths(6);
         $endDate = Carbon::now()->lastOfMonth();
