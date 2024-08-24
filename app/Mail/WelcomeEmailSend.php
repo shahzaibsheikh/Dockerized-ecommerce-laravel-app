@@ -29,9 +29,9 @@ class WelcomeEmailSend extends Mailable
         return $this->from('hi@demomailtrap.com','Shahzaib Happy Coding')
            ->replyTo('hi@demomailtrap.com','Reply To Email')
            ->subject($this->emailData['subject'])
-           ->view('mail_template.index',['name'=>$this->emailData['name']])
+           ->view('mail_template.index',['name'=>$this->emailData['name'] ?? null ])
            ->with([
-                 'tagline'=> $this->emailData['tagline']
+                 'tagline'=> $this->emailData['tagline'] ?? null
            ]);
     }
 

@@ -24,7 +24,6 @@ class WelcomeEmail
     public function __construct($user)
     {
        $this->user = $user;
-        //
     }
 
     /**

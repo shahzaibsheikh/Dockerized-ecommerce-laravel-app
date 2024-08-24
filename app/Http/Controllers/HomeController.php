@@ -20,7 +20,6 @@ class HomeController extends Controller
         //       // job to dipatch through queue worker
         //     // EmailJob::dispatch($userData);
         // }
-
         $startDate = Carbon::now()->subMonths(6);
         $endDate = Carbon::now()->lastOfMonth();
         $products = Product::whereBetween('created_at',[$startDate,$endDate])->inRandomOrder()->limit(10)->get()->toArray();

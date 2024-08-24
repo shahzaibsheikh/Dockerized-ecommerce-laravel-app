@@ -53,7 +53,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => ['daily', 'database'],
             'ignore_exceptions' => false,
         ],
 
@@ -120,6 +120,7 @@ return [
         'database' => [
             'driver' => 'custom',
             'via' => App\Logging\DatabaseLogger::class,
+            'level' =>['debug','error','critical','alert','warning','emergency','notice'],
         ],
     ],
 

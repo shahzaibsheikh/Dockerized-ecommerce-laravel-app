@@ -5,7 +5,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\test;
 use App\Http\Controllers\ProductController;
-
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +27,7 @@ use App\Http\Controllers\ProductController;
 // Route::get('/', function () {
 //     return view('index_user');
 // })->name('guest');
+
 
 Route::controller(\App\Http\Controllers\HomeController::class)->group(function(){
     Route::get('/','index')->name('index-home');

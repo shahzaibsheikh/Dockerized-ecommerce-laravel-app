@@ -40,7 +40,7 @@ class AuthenticationController extends Controller
         $requestData['profile'] = $imgData;
 
         $user = User::create($requestData);
-        // event(new WelcomeEmail($user));
+        event(new WelcomeEmail($user));
         return redirect()->route('login')->with('success','User Inserted Successfully');
 
 
