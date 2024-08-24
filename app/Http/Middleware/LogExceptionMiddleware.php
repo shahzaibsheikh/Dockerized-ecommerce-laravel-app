@@ -21,7 +21,9 @@ public function handle(Request $request, Closure $next)
     try {
         return $next($request);
     } catch (\Throwable $exception) {
+
         // Log the exception to a custom logging channel
+
         Log::channel('database')->error('Adding exception in the database ',[
             'request' => $request,
             'ex'      => $exception,

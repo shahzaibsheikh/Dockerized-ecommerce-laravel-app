@@ -3,7 +3,7 @@
 
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\test;
+// use App\Http\Controllers\test;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
@@ -46,7 +46,7 @@ Route::get('/greeting', function () {
 Route::redirect('/home','/greeting');
 
 
-Route::get('/checking',[test::class,'index']);
+// Route::get('/checking',[test::class,'index']);
 
 Route::get('getBrandsData',[\App\Http\Controllers\BrandsController::class,'getBrandsData']);
 

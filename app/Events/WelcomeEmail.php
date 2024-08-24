@@ -12,6 +12,7 @@ use Illuminate\Queue\SerializesModels;
 
 class WelcomeEmail
 {
+
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $user;

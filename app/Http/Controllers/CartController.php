@@ -20,6 +20,7 @@ class CartController extends Controller
      */
     public static function index()
     {
+        
         $cart=[];
         if(!empty(AppHelper::userState())){
             $userId= AppHelper::userState()->id;

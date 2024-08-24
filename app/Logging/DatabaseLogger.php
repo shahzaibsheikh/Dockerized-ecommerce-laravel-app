@@ -20,6 +20,8 @@ class DatabaseLogger
                 $request =  !empty($record['context']['request']) ? $record['context']['request'] :  null;
                 $payload =  !empty($record['context']['payload']) ? $record['context']['payload'] :  null; // This is for Logs from Artisan commands or other tasks.
 
+                 // saving changes
+
                   DB::table('exception_logs')->insert([
                     'user_id'        => !empty(auth()->check()) ? auth()->user()->id : null,
                     'exception_type' => !empty($exception) ? get_class($exception) : null,

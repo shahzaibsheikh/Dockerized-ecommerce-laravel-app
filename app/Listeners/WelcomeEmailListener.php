@@ -40,5 +40,6 @@ class WelcomeEmailListener
         Mail::to((string) $user->email)
         ->locale('fr-FR')
         ->send(new WelcomeEmailSend($emailData));
+        
     }
 }

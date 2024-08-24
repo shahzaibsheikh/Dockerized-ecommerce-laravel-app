@@ -28,6 +28,7 @@ return new class extends Migration
             $table->json('request_data')->nullable();
             $table->json('headers')->nullable();
             $table->timestamps();
+            
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
