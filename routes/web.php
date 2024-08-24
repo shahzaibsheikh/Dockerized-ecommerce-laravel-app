@@ -3,9 +3,10 @@
 
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\test;
+// use App\Http\Controllers\test;
 use App\Http\Controllers\ProductController;
-
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +28,7 @@ use App\Http\Controllers\ProductController;
 //     return view('index_user');
 // })->name('guest');
 
+
 Route::controller(\App\Http\Controllers\HomeController::class)->group(function(){
     Route::get('/','index')->name('index-home');
     Route::get('/view-product/{product:pr_code}','productInfo')->name('product_info');
@@ -44,7 +46,7 @@ Route::get('/greeting', function () {
 Route::redirect('/home','/greeting');
 
 
-Route::get('/checking',[test::class,'index']);
+// Route::get('/checking',[test::class,'index']);
 
 Route::get('getBrandsData',[\App\Http\Controllers\BrandsController::class,'getBrandsData']);
 

@@ -16,18 +16,19 @@ return new class extends Migration
         Schema::create('exception_logs', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->nullable();
-            $table->string('exception_type');
-            $table->text('message');
+            $table->string('exception_type')->nullable();
+            $table->text('message')->nullable();
             $table->integer('code')->nullable();
-            $table->string('file');
-            $table->integer('line');
-            $table->longText('stack_trace');
-            $table->string('url');
-            $table->string('method');
-            $table->ipAddress('ip');
+            $table->string('file')->nullable();
+            $table->integer('line')->nullable();
+            $table->longText('stack_trace')->nullable();
+            $table->string('url')->nullable();
+            $table->string('method')->nullable();
+            $table->ipAddress('ip')->nullable();
             $table->json('request_data')->nullable();
             $table->json('headers')->nullable();
             $table->timestamps();
+            
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });

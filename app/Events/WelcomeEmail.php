@@ -12,6 +12,7 @@ use Illuminate\Queue\SerializesModels;
 
 class WelcomeEmail
 {
+
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $user;
@@ -24,7 +25,6 @@ class WelcomeEmail
     public function __construct($user)
     {
        $this->user = $user;
-        //
     }
 
     /**

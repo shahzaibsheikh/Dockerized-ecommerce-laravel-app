@@ -9,6 +9,7 @@ use App\Jobs\EmailJob;
 use App\Helpers\AppHelper;
 use Illuminate\Http\Request;
 
+
 class HomeController extends Controller
 {
     public function index(Request $request){
@@ -20,7 +21,6 @@ class HomeController extends Controller
         //       // job to dipatch through queue worker
         //     // EmailJob::dispatch($userData);
         // }
-
         $startDate = Carbon::now()->subMonths(6);
         $endDate = Carbon::now()->lastOfMonth();
         $products = Product::whereBetween('created_at',[$startDate,$endDate])->inRandomOrder()->limit(10)->get()->toArray();
