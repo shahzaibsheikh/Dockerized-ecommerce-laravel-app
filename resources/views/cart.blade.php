@@ -62,7 +62,7 @@
                                     <div class="row">
                                         <div class="col-md-12 order-2 order-lg-1 col-lg-5 col-xl-6">
                                             <div class="order-note">
-                                               
+
 <!--                                                    <div class="form-group">-->
 <!--                                                        <div class="input-group">-->
 <!--                                                            <input type="search" class="form-control"-->
@@ -79,9 +79,9 @@
                                                         <label for="specialNotes">Special Note for this order:</label>
                                                         <textarea class="form-control" name="specialNotes"
                                                                   id="specialNotes" rows="3"
-                                                                  placeholder="Message here">{{ $cartData['comment']['body'] }}</textarea>
+                                                                  placeholder="Message here"> @if(!empty($cartData['comment']['body'])) {{  $cartData['comment']['body'] }}  @endif </textarea>
                                                     </div>
-                                               
+
                                             </div>
                                         </div>
                                         <div class="col-md-12 order-1 order-lg-2 col-lg-7 col-xl-6">
@@ -115,7 +115,7 @@
                                         &nbsp;Update Cart
                                     </button>
                             </form>
-                                    <a href="page-checkout.html" class="btn btn-outline-success my-1"><i class="fa fa-credit-card-alt" aria-hidden="true"></i>
+                                    <a href="{{ route('Store-Order') }}" class="btn btn-outline-success my-1"><i class="fa fa-credit-card-alt" aria-hidden="true"></i>
                                         &nbsp;Proceed to Checkout</a>
                                 </div>
                             </div>

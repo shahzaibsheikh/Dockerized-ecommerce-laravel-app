@@ -97,3 +97,4 @@ Route::get('/update-product-status/{Product}/{status?}',[\App\Http\Controllers\P
 
 
 Route::resource('Cart',\App\Http\Controllers\CartController::class);
+Route::get('store-order',[\App\Http\Controllers\CartController::class,'storeOrder'])->name('Store-Order');
