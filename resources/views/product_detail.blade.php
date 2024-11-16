@@ -20,11 +20,14 @@
                 </div>
                 <p class="lead">{{ $Product['pr_description'] }}</p>
                 <div class="d-flex">
-                    <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1" style="max-width: 3rem" />
-                    <button class="btn btn-outline-dark flex-shrink-0" type="button">
-                        <i class="bi-cart-fill me-1"></i>
-                        Add to Cart
-                    </button>
+                    <form id="product-form">
+                        <input type="hidden" name="product_id" value="{{ $Product['id'] }}" >
+                        <input class="form-control text-center me-3" name="pr_quantity" id="inputQuantity" step="any" type="number" min="1" value="1" style="max-width: 3rem" />
+                        <button class="btn btn-outline-dark flex-shrink-0" type="submit">
+                            <i class="bi-cart-fill me-1"></i>
+                            Add to Cart
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -77,3 +80,105 @@
 </section>
 
 @endsection
+
+@section('footer_scripts')
+<script>
+
+//  document.addEventListener('DOMContentLoaded', function() {
+
+//     const form = document.getElementById('product-form');
+
+//     form.addEventListener('submit', async (event) => {
+//         event.preventDefault();
+//         // Get the form data
+//         const formData = new FormData(form);
+//         try{
+//             // Make the async AJAX request
+
+//             const response = await fetch("{{route('Add_to_cart')}}",{
+//                 'method': 'POST',
+//                 // 'headers':{
+//                 //         //   'Content-Type': 'application/json',
+//                 //           'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+//                 //             },
+
+//                 'body':formData,
+
+//             });
+
+//             // Handle the response
+//             if(!response.ok){
+//                 const error = await response.json();
+//                 throw new Error(error.message || 'Something went wrong');
+//             }
+
+//             const data = await response.json();
+//             // Use Toastr to display success message
+//             toastr.success(data.message, 'Success');
+//             form.reset();
+//         }catch(error){
+//                // Use Toastr to display error message
+//                toastr.error(error.message, 'Error');
+
+//         }
+//     });
+
+//  });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('product-form');
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        // Get the form data
+        const formData = new FormData(form);
+        const fdata = {};
+        formData.forEach((value, key) => {
+        fdata[key] = value;
+        });
+        try {
+            // Make the async AJAX request
+            const response = await fetch("{{ route('Add_to_cart') }}", {
+                method: 'POST',
+                headers: {
+                    // Don't set Content-Type when sending FormData
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify(fdata),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                // Handle validation errors
+                if (response.status === 422) {
+                    let errorMessage = 'Validation failed:\n';
+                    for (const [field, errors] of Object.entries(data.errors)) {
+                        errorMessage += `${field}: ${errors.join(', ')}\n`;
+                    }
+                    throw new Error(errorMessage);
+                }else if(response.status === 423){
+                    throw new Error(data.errors ? JSON.stringify(data.errors) : 'Unexpected error');
+                }
+                throw new Error(data.message || 'Something went wrong');
+
+            }
+
+            // Success case
+            toastr.success(data.message, 'Success');
+            form.reset();
+
+        } catch (error) {
+            // Error handling
+            toastr.error(error.message || 'An unexpected error occurred', 'Error');
+            console.error('Error:', error);
+        }
+    });
+});
+
+</script>
+@endsection
+
+

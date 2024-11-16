@@ -12,6 +12,7 @@ use App\Models\LineItems;
 use PhpParser\Parser\Multiple;
 use Illuminate\Support\Collection;
 use App\Models\Orders;
+use Illuminate\Support\Facades\Validator;
 
 class CartController extends Controller
 {
@@ -24,16 +25,14 @@ class CartController extends Controller
     {
 
           $cart=[];
-          $subtotal= 0;
+          $subtotal=  0;
           $taxAmount= 0;
-          $shipping =0;
+          $shipping = 0;
           $tax      = 0; //in percentage %
-          $total    =0;
-          $userId=  !empty(AppHelper::userState()->id)?AppHelper::userState()->id: null;
-          $cart=User::select(['id','first_name'])->with('carts.product')->find($userId)->toArray();
-
+          $total    = 0;
+          
         if(!empty(AppHelper::userState()) && !empty($cart['carts']) ){
-            $cart=User::select(['id','first_name'])->with('carts.product')->find($userId)->toArray();
+            $cart=User::select(['id','first_name'])->with('carts.product')->find(AppHelper::userState()->id)->toArray();
             $comment=auth()->user()->comments()->get()->toArray();
             if(!empty($comment)) {
               $cart['comment']=$comment[0];
@@ -134,10 +133,6 @@ class CartController extends Controller
     }
 
     public function storeOrder(Request $request){
-    $requestData= $request->all();
-    // echo "<pre>";
-    // print_r($requestData);
-    // die();
     $userId= AppHelper::userState()->id;
     $cart=User::select(['id','first_name'])->with('carts.product')->find($userId)->toArray();
     $comment=Comment::where('user_id',$userId)->firstorfail();
@@ -197,5 +192,45 @@ class CartController extends Controller
     //    return redirect()->back()->with('success','Order placed successfully.');
 
 
+    }
+
+    public function addToCart(Request $request){
+        $data = $request->except('_token');
+        // Define validation rules
+        $rules = [
+               'product_id' => 'required|integer',
+               'pr_quantity' => 'required|integer|min:1'
+        ];
+
+        $messages = [
+            'product_id.required' => 'Product ID is required.',
+            'product_id.string' => 'Product ID must be an integer.',
+            'pr_quantity.required' => 'Quantity is required.',
+            'pr_quantity.integer' => 'Quantity must be a valid number.',
+            'pr_quantity.min' => 'Quantity must be at least 1.',
+        ];
+
+        // Create a validator instance
+        $validator = Validator::make($data, $rules,$messages);
+
+        if(empty(AppHelper::userState())){
+            return response()->json([
+                'status' => false,
+                'errors' => 'User must Log In.'
+             ], 423);
+        }
+
+        if ($validator->fails()) {
+            return response()->json([
+            'status' => false,
+            'errors' => $validator->errors()->toArray()
+         ], 422);
+        }
+
+       // Add to Cart
+        $data['user_id'] = auth()->user()->id;
+        Cart::create($data);
+
+        return response()->json(['message' => 'Product added successfully!'],200);
     }
 }

@@ -18,7 +18,7 @@
                 @endif
                 <div class="card-body">
                     <form action="{{route('authenticate')}}" method="POST" name="loginForm">
-                    {{ csrf_field() }}
+                    @csrf
                     <div class="form-group">
                             <label for="emailInput">Email address:</label>
                             <input type="email" class="form-control" name="email" id="email"

@@ -32,6 +32,7 @@
                                             @php
                                              $sr=1;
                                             @endphp
+                                            @if(!empty($cartData['carts']))
                                             @foreach ($cartData['carts'] as $key => $item)
                                             @if (is_array($item['product']))
                                             <tbody>
@@ -54,7 +55,8 @@
                                             </tr>
                                             </tbody>
                                             @endif
-                                        @endforeach
+                                         @endforeach
+                                        @endif
                                         </table>
                                     </div>
                                 </div>
