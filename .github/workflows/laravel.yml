@@ -10,24 +10,22 @@ jobs:
   laravel-tests:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: learn_vern
-          MYSQL_USER: root
-          MYSQL_PASSWORD: ""
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping -h localhost || exit 1"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
     steps:
     - uses: actions/checkout@v3
+
+    - name: Install System Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y mysql-server
+
+    - name: Start MySQL Service
+      run: sudo service mysql start
+
+    - name: Set Up MySQL Database
+      run: |
+        sudo mysql -e "CREATE USER IF NOT EXISTS 'shahzaib'@'localhost' IDENTIFIED BY '123';"
+        sudo mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'shahzaib'@'localhost' WITH GRANT OPTION;"
+        sudo mysql -e "FLUSH PRIVILEGES;"
 
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
@@ -41,7 +39,7 @@ jobs:
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
-    - name: Generate key
+    - name: Generate Application Key
       run: php artisan key:generate
 
     - name: Directory Permissions
@@ -53,8 +51,8 @@ jobs:
         echo "DB_HOST=127.0.0.1" >> .env
         echo "DB_PORT=3306" >> .env
         echo "DB_DATABASE=learn_vern" >> .env
-        echo "DB_USERNAME=root" >> .env
-        echo "DB_PASSWORD=" >> .env
+        echo "DB_USERNAME=shahzaib" >> .env  # Use the new user 'shahzaib'
+        echo "DB_PASSWORD=123" >> .env      # Use the password '123'
 
     - name: Wait for MySQL
       run: |
@@ -64,22 +62,11 @@ jobs:
             break;
           fi
           echo "Waiting for MySQL to be ready...";
-          sleep 1;
+          sleep 3;
         done
 
-    - name: Test MySQL Connection
-      run: |
-        php -r "
-        try {
-          new PDO('mysql:host=127.0.0.1;port=3306;dbname=learn_vern', 'root', '');
-          echo 'Database connection successful!';
-        } catch (PDOException \$e) {
-          echo 'Database connection failed: ' . \$e->getMessage();
-          exit(1);
-        }"
-
     - name: Run Migrations
-      run: php artisan migrate --force --retry=5
+      run: php artisan migrate --force
 
     - name: Run Tests
       run: php artisan test
