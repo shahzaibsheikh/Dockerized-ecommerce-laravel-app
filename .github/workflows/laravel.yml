@@ -15,7 +15,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.1'
+          php-version: '8.1.12'
           extensions: mbstring, bcmath, pdo_mysql
 
       # Check out the code from the repository
@@ -65,5 +65,5 @@ jobs:
           DB_PORT: 3306
           DB_DATABASE: learn_vern
           DB_USERNAME: root
-          DB_PASSWORD: 
+          DB_PASSWORD:
         run: php artisan test
