@@ -15,10 +15,8 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
+          php-version: '8.1'
           extensions: mbstring, bcmath, pdo_mysql
-          ini-values: post_max_size=256M, upload_max_filesize=256M
-          coverage: none
 
       # Check out the code from the repository
       - name: Checkout code
@@ -47,14 +45,16 @@ jobs:
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
           DB_DATABASE: test_db
-          DB_USERNAME: root
-          DB_PASSWORD: secret
+          DB_USERNAME: runner
+          DB_PASSWORD: runner_password
         run: |
           sudo apt-get update
           sudo apt-get install -y mysql-server
           sudo service mysql start
-          mysql -e "CREATE DATABASE IF NOT EXISTS test_db;"
-          mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'secret'; FLUSH PRIVILEGES;"
+          mysql -u root -e "CREATE DATABASE IF NOT EXISTS test_db;"
+          mysql -u root -e "CREATE USER IF NOT EXISTS 'runner'@'localhost' IDENTIFIED BY 'runner_password';"
+          mysql -u root -e "GRANT ALL PRIVILEGES ON test_db.* TO 'runner'@'localhost';"
+          mysql -u root -e "FLUSH PRIVILEGES;"
 
       # Run Laravel tests
       - name: Run tests
@@ -63,6 +63,6 @@ jobs:
           DB_HOST: 127.0.0.1
           DB_PORT: 3306
           DB_DATABASE: test_db
-          DB_USERNAME: root
-          DB_PASSWORD: 
+          DB_USERNAME: runner
+          DB_PASSWORD: runner_password
         run: php artisan test
