@@ -5,6 +5,11 @@ on:
     branches:
       - master
 
+env:
+  MYSQL_DATABASE:  ${{ secrets.ECOM_DB }}
+  MYSQL_USER: ${{ secrets.ECOM_DB_USERNAME }}
+  MYSQL_PASSWORD: ${{ secrets.ECOM_DB_PASSWORD }}
+
 jobs:
   mysql-setup:
     runs-on: ubuntu-latest  # This is the environment where the MySQL service will be installed
@@ -29,11 +34,28 @@ jobs:
           done
           echo "MySQL is ready!"
 
-      - name: Set up MySQL user and privileges
+      - name: Setup MySQL 
         run: |
-          sudo mysql -u ${{ secrets.MASTER_MYSQL_USERNAME }} -p"${{ secrets.MASTER_MYSQL_PASSWORD }}" -e "CREATE USER IF NOT EXISTS 'shahzaib'@'localhost' IDENTIFIED BY '123';"
-          sudo mysql -u ${{ secrets.MASTER_MYSQL_USERNAME }} -p"${{ secrets.MASTER_MYSQL_PASSWORD }}" -e "GRANT ALL PRIVILEGES ON *.* TO 'shahzaib'@'localhost' WITH GRANT OPTION;"
-          sudo mysql -u ${{ secrets.MASTER_MYSQL_USERNAME }} -p"${{ secrets.MASTER_MYSQL_PASSWORD }}" -e "FLUSH PRIVILEGES;"
+            sudo systemctl start mysql
+            mysql -e 'CREATE DATABASE ${{ env.MYSQL_DATABASE }};' \
+              -u${{ secrets.MASTER_MYSQL_USERNAME }} \
+              -p${{ secrets.MASTER_MYSQL_PASSWORD }}
+
+            mysql -e "CREATE USER '${{ env.MYSQL_USER }}'@'localhost' \
+              IDENTIFIED BY '${{ env.MYSQL_PASSWORD }}';" \
+              -u${{ secrets.MASTER_MYSQL_USERNAME }} \
+              -p${{ secrets.MASTER_MYSQL_PASSWORD }}
+
+            mysql -e "GRANT SELECT, INSERT, UPDATE, DELETE, ALTER, DROP, CREATE, TRUNCATE \
+              ON ${{ env.MYSQL_DATABASE }}.* TO '${{ env.MYSQL_USER }}'@'localhost' \
+              WITH GRANT OPTION;" \
+              -u${{ secrets.MASTER_MYSQL_USERNAME }} \
+              -p${{ secrets.MASTER_MYSQL_PASSWORD }}
+
+            mysql -e "FLUSH PRIVILEGES;" \
+              -u${{ secrets.MASTER_MYSQL_USERNAME }} \
+              -p${{ secrets.MASTER_MYSQL_PASSWORD }}
+
 
       - name: Test MySQL Connection
         run: |
