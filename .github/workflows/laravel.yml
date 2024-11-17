@@ -21,11 +21,14 @@ jobs:
           sudo systemctl start mysql
           sudo systemctl enable mysql
 
+      - name: Wait for 5 seconds (optional delay)
+        run: sleep 5  # Adds a 5-second delay before continuing the next steps
+
       - name: Set up MySQL user and privileges
         run: |
-          sudo mysql -e "CREATE USER IF NOT EXISTS 'shahzaib'@'localhost' IDENTIFIED BY '123';"
-          sudo mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'shahzaib'@'localhost' WITH GRANT OPTION;"
-          sudo mysql -e "FLUSH PRIVILEGES;"
+          sudo mysql -u ${{ secrets.MASTER_MYSQL_USERNAME }} -p"${{ secrets.MASTER_MYSQL_PASSWORD }}" -e "CREATE USER IF NOT EXISTS 'shahzaib'@'localhost' IDENTIFIED BY '123';"
+          sudo mysql -u ${{ secrets.MASTER_MYSQL_USERNAME }} -p"${{ secrets.MASTER_MYSQL_PASSWORD }}" -e "GRANT ALL PRIVILEGES ON *.* TO 'shahzaib'@'localhost' WITH GRANT OPTION;"
+          sudo mysql -u ${{ secrets.MASTER_MYSQL_USERNAME }} -p"${{ secrets.MASTER_MYSQL_PASSWORD }}" -e "FLUSH PRIVILEGES;"
 
       - name: Test MySQL Connection
         run: |
