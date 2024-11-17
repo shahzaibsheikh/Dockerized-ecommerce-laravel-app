@@ -1,88 +1,38 @@
-name: Laravel CI/CD
+
+name: MySQL Setup in GitHub Actions
 
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches:
+      - master
 
 jobs:
-  laravel-tests:
-    runs-on: ubuntu-latest
+  mysql-setup:
+    runs-on: ubuntu-latest  # This is the environment where the MySQL service will be installed
 
     steps:
-    - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    # Step 1: Install System Dependencies
-    - name: Install System Dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y mysql-server
-        # Set root password as empty (mimicking XAMPP local setup where root has no password)
-        sudo mysql -e "UPDATE mysql.user SET authentication_string=PASSWORD('') WHERE User='root';"
-        sudo mysql -e "FLUSH PRIVILEGES;"
+      - name: Install MySQL
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mysql-server
+          sudo systemctl start mysql
+          sudo systemctl enable mysql
 
-    # Step 2: Start MySQL Service
-    - name: Start MySQL Service
-      run: sudo service mysql start
+      - name: Set up MySQL user and privileges
+        run: |
+          sudo mysql -e "CREATE USER IF NOT EXISTS 'shahzaib'@'localhost' IDENTIFIED BY '123';"
+          sudo mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'shahzaib'@'localhost' WITH GRANT OPTION;"
+          sudo mysql -e "FLUSH PRIVILEGES;"
 
-    # Step 3: Ensure MySQL is ready before running any commands
-    - name: Wait for MySQL to be fully initialized
-      run: |
-        for i in {1..30}; do
-          if mysqladmin ping -h 127.0.0.1 --silent; then
-            echo "MySQL is ready!";
-            break;
-          fi
-          echo "Waiting for MySQL to be ready...";
-          sleep 3;
-        done
+      - name: Test MySQL Connection
+        run: |
+          mysql -u shahzaib -p123 -h 127.0.0.1 -e "SHOW DATABASES;"
 
-    # Step 4: Set Up MySQL Database
-    - name: Set Up MySQL Database
-      run: |
-        # Creating 'shahzaib' user with a password (adjust based on your local XAMPP setup)
-        sudo mysql -u root -e "CREATE USER IF NOT EXISTS 'shahzaib'@'localhost' IDENTIFIED BY '123';"
-        sudo mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'shahzaib'@'localhost' WITH GRANT OPTION;"
-        sudo mysql -u root -e "FLUSH PRIVILEGES;"
+      - name: Run your tests or database commands
+        run: |
+          # Replace this with the command you want to run, such as running your PHP tests
+          mysql -u ${{secrets.ECOM_DB_USERNAME}} -p${{secrets.ECOM_DB_PASSWORD}} -h 127.0.0.1 -e "SHOW DATABASES;"
 
-    # Step 5: Copy .env
-    - name: Copy .env
-      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-
-    # Step 6: Setup PHP (same as before)
-    - name: Setup PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: '8.1'
-        extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, pdo_mysql, bcmath, soap, zip, curl
-
-    # Step 7: Install Dependencies
-    - name: Install Dependencies
-      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-
-    # Step 8: Generate Application Key
-    - name: Generate Application Key
-      run: php artisan key:generate
-
-    # Step 9: Directory Permissions (same as before)
-    - name: Directory Permissions
-      run: chmod -R 777 storage bootstrap/cache
-
-    # Step 10: Update .env for GitHub Actions (use new user shahzaib)
-    - name: Update .env for GitHub Actions
-      run: |
-        echo "DB_CONNECTION=mysql" >> .env
-        echo "DB_HOST=127.0.0.1" >> .env
-        echo "DB_PORT=3306" >> .env
-        echo "DB_DATABASE=learn_vern" >> .env
-        echo "DB_USERNAME=${{secrets.ECOM_DB_USERNAME}}" >> .env
-        echo "DB_PASSWORD=${{secrets.ECOM_DB_PASSWORD}}" >> .env
-
-    # Step 11: Run Migrations
-    - name: Run Migrations
-      run: php artisan migrate --force
-
-    # Step 12: Run Tests
-    - name: Run Tests
-      run: php artisan test
