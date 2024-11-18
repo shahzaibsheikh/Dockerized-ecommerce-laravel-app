@@ -8,6 +8,7 @@
         @include('flash_data')
         <div class="col-md-12 col-lg-12 col-xl-12">
             <div class="card m-b-30">
+
                 <div class="card-header">
                     <h5 class="card-title">Cart</h5>
                 </div>
@@ -47,7 +48,7 @@
                                                 <td>
                                                     <div class="form-group mb-0">
                                                         <input type="number" class="form-control cart-qty" min="0"
-                                                               name="cartQty[{{ $item['id'] }}]" id="cartQty" value="{{ $item['pr_quantity'] ??  1}}">
+                                                               name="cartQty[{{$item['product']['id'] }}]" id="cartQty" value="{{ $item['pr_quantity'] ??  1}}">
                                                     </div>
                                                 </td>
                                                 <td>PKR{{ !empty($item['product']['pr_sale_price']) && $item['product']['pr_sale_price'] > 0  ? $item['product']['pr_sale_price'] :  $item['product']['pr_price'] }}</td>
@@ -64,19 +65,6 @@
                                     <div class="row">
                                         <div class="col-md-12 order-2 order-lg-1 col-lg-5 col-xl-6">
                                             <div class="order-note">
-
-<!--                                                    <div class="form-group">-->
-<!--                                                        <div class="input-group">-->
-<!--                                                            <input type="search" class="form-control"-->
-<!--                                                                   placeholder="Coupon Code" aria-label="Search"-->
-<!--                                                                   aria-describedby="button-addonTags">-->
-<!--                                                            <div class="input-group-append">-->
-<!--                                                                <button class="input-group-text" type="submit"-->
-<!--                                                                        id="button-addonTags">Apply-->
-<!--                                                                </button>-->
-<!--                                                            </div>-->
-<!--                                                        </div>-->
-<!--                                                    </div>-->
                                                     <div class="form-group">
                                                         <label for="specialNotes">Special Note for this order:</label>
                                                         <textarea class="form-control" name="specialNotes"
@@ -112,14 +100,18 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <div class="cart-footer text-right">
+                                    @if(!empty($cartData['carts']))
                                     <button type="submit" class="btn btn-outline-primary my-1"><i class="fa fa-pencil" aria-hidden="true"></i>
                                         &nbsp;Update Cart
                                     </button>
+                                    @endif
                             </form>
                                     <a href="{{ route('Store-Order') }}" class="btn btn-outline-success my-1"><i class="fa fa-credit-card-alt" aria-hidden="true"></i>
                                         &nbsp;Proceed to Checkout</a>
                                 </div>
+
                             </div>
                         </div>
                     </div>

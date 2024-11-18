@@ -84,47 +84,6 @@
 @section('footer_scripts')
 <script>
 
-//  document.addEventListener('DOMContentLoaded', function() {
-
-//     const form = document.getElementById('product-form');
-
-//     form.addEventListener('submit', async (event) => {
-//         event.preventDefault();
-//         // Get the form data
-//         const formData = new FormData(form);
-//         try{
-//             // Make the async AJAX request
-
-//             const response = await fetch("{{route('Add_to_cart')}}",{
-//                 'method': 'POST',
-//                 // 'headers':{
-//                 //         //   'Content-Type': 'application/json',
-//                 //           'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-//                 //             },
-
-//                 'body':formData,
-
-//             });
-
-//             // Handle the response
-//             if(!response.ok){
-//                 const error = await response.json();
-//                 throw new Error(error.message || 'Something went wrong');
-//             }
-
-//             const data = await response.json();
-//             // Use Toastr to display success message
-//             toastr.success(data.message, 'Success');
-//             form.reset();
-//         }catch(error){
-//                // Use Toastr to display error message
-//                toastr.error(error.message, 'Error');
-
-//         }
-//     });
-
-//  });
-
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('product-form');
 

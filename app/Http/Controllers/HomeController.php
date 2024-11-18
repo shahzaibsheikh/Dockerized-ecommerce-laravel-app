@@ -28,6 +28,7 @@ class HomeController extends Controller
     }
 
     public function productInfo(Request $request,Product $product){
+
         // $productDetail = Product::where('id','=',$id)->first();
         $relatedProduct = Product::where('pr_gender',$product->pr_gender)->where('pr_function',$product->pr_function)->inRandomOrder()->limit(4)->get()->toArray();
         return view('product_detail',['Product'=>$product,'RelatedProduct'=>$relatedProduct]);

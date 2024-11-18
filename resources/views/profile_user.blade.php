@@ -34,26 +34,26 @@
                                            placeholder="profile"
                                            required="">
                                 </div>
-                    
+
                                 <button class="btn btn-outline-primary" type="submit">Upload New Image</button>
-                            
+
                              </div>
                         </form>
                         <!-- Profile picture upload button-->
-                    
+
                     </div>
                 </div>
             </div>
-           
+
             <div class="col-xl-8">
                 <!-- Account details card-->
                 <div class="card mb-4">
-                   
+
                     <div class="card-header"><h5>Account Details</h5></div>
                     <div class="card-body">
                         <form method="POST" action="{{ route('profile-update')}}" enctype="multipart/form-data">
                         @csrf
-                        @method('PUT')    
+                        @method('PUT')
                         <div class="row mb-3">
                                 <div class="col">
                                     <label for="fname" class="form-label" >First Name</label>
@@ -81,7 +81,7 @@
                                 </div>
                             </div>
                             <div class="row mb-3">
-                    
+
                                 <div class="col">
                                     <label for="gender" class="form-label">Gender</label><br>
                                     <input type="radio" id="gender" name="gender" value="Male"  {{$data['user']['gender'] == 'Male' ?'checked':''}} >&nbsp;&nbsp;Male&nbsp;&nbsp;
@@ -127,66 +127,30 @@
                             <thead>
                             <tr>
                                 <th scope="col">#</th>
+                                <th scope="col">Order #</th>
                                 <th scope="col">Product</th>
                                 <th scope="col">Date</th>
                                 <th scope="col">Price</th>
-                                <th scope="col">Shipping Charge</th>
+                                <th scope="col">Order Shipping Charge</th>
                                 <th scope="col">Quantity</th>
                                 <th scope="col">Total</th>
                                 <th scope="col">Status</th>
                             </tr>
                             </thead>
                             <tbody>
+                     @foreach($data['orderItems'] as $item )
                             <tr>
-                                <td scope="row">1</td>
-                                <td>Titan Watch</td>
-                                <td>17-02-2022</td>
-                                <td>₹1000</td>
-                                <td>₹00</td>
-                                <td>5</td>
-                                <td>₹5000</td>
-                                <td>Delivered</td>
+                                <td scope="row">{{ $loop->iteration }}</td>
+                                <td>LV-{{$item->order_id }}</td>
+                                <td>{{ $item->productData->pr_name }}</td>
+                                <td>{{ $item->created_at }}</td>
+                                <td>@Money($item->product_price)</td>
+                                <td>@Money($item->ItemOrderDetail->order_shipping)</td>
+                                <td>{{ $item->quantity }}</td>
+                                <td>@Money($item->total_price)</td>
+                                <td>{{$item->ItemOrderDetail->order_status}}</td>
                             </tr>
-                            <tr>
-                                <td scope="row">2</td>
-                                <td>Police Watch</td>
-                                <td>17-02-2022</td>
-                                <td>₹1000</td>
-                                <td>₹00</td>
-                                <td>5</td>
-                                <td>₹5000</td>
-                                <td>Attempted Delivery</td>
-                            </tr>
-                            <tr>
-                                <td scope="row">3</td>
-                                <td>Rolex Watch</td>
-                                <td>17-02-2022</td>
-                                <td>₹1000</td>
-                                <td>₹00</td>
-                                <td>5</td>
-                                <td>₹5000</td>
-                                <td>Confirmed</td>
-                            </tr>
-                            <tr>
-                                <td scope="row">4</td>
-                                <td>Tag Heuer Watch</td>
-                                <td>17-02-2022</td>
-                                <td>₹1000</td>
-                                <td>₹00</td>
-                                <td>5</td>
-                                <td>₹5000</td>
-                                <td>Out for delivery</td>
-                            </tr>
-                            <tr>
-                                <td scope="row">5</td>
-                                <td>Titan Watch</td>
-                                <td>17-02-2022</td>
-                                <td>₹1000</td>
-                                <td>₹00</td>
-                                <td>5</td>
-                                <td>₹5000</td>
-                                <td>On its way</td>
-                            </tr>
+                     @endforeach
                             </tbody>
                         </table>
                     </div>

@@ -14,6 +14,7 @@ class Orders extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
+        'id',
         'user_id',
         'comment',
         'order_sub_total',
@@ -26,6 +27,6 @@ class Orders extends Model
 
 
     public function user(){
-        $this->belongsTo(User::class,'user_id','id');
+      return  $this->belongsTo(User::class,'user_id','id');
     }
 }

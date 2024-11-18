@@ -5,10 +5,15 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use \App\Models\Country;
 use \App\Models\User;
+use \App\Models\LineItems;
 class UserController extends Controller
 {
     public function UserProfile(){
         $data['user']=auth()->user();
+        $data['orderItems'] = LineItems::where('user_id',auth()->user()->id)->with(['productData','user','ItemOrderDetail'])->orderBy('id','DESC')->get();
+        // echo"<pre>";
+        // print_r($data['orderItems']);
+        // die();
         $data['countries']= Country::all();
         return view('profile_user',['data'=>$data]);
     }
@@ -23,7 +28,7 @@ class UserController extends Controller
         'address'=>'nullable|string|max:100',
         'country'=>'required|exists:countries,id',
         ]);
-        
+
         $requestData= $request->except(['_token','_method','update']);
         $user = User::find(auth()->user()->id);
         $user->update($requestData);

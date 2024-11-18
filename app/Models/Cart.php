@@ -14,9 +14,11 @@ class Cart extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
+         'id',
          'user_id',
          'pr_quantity',
-         'product_id'
+         'product_id',
+         'created_at'
     ];
 
     // public function getProductData(){

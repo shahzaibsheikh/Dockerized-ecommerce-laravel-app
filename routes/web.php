@@ -39,14 +39,6 @@ Route::controller(\App\Http\Controllers\HomeController::class)->group(function()
 Route::get('product/create',[ProductController::class,'create'])->name('products.create');
 Route::post('product/store',[ProductController::class,'store'])->name('product.store');
 
-Route::get('/greeting', function () {
-    return 'Hello Greeting';
-});
-
-Route::redirect('/home','/greeting');
-
-
-// Route::get('/checking',[test::class,'index']);
 
 Route::get('getBrandsData',[\App\Http\Controllers\BrandsController::class,'getBrandsData']);
 
@@ -99,3 +91,9 @@ Route::get('/update-product-status/{Product}/{status?}',[\App\Http\Controllers\P
 Route::resource('Cart',\App\Http\Controllers\CartController::class);
 Route::get('store-order',[\App\Http\Controllers\CartController::class,'storeOrder'])->name('Store-Order');
 Route::post('add-to-cart', [\App\Http\Controllers\CartController::class, 'addToCart'])->name('Add_to_cart');
+
+Route::group(['prefix'=>'/admin','middleware'=>['auth.custom'],'controller'=>\App\Http\Controllers\OrdersController::class],function(){
+    Route::get('/Orders','index')->name('order-index');
+    Route::post('/Order-Status/{order}','updateOrderStatus')->name('update-order-status');
+    Route::get('/Order-LineItems/{order}','getLineItems')->name('order-line-items');
+});

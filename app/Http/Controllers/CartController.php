@@ -30,9 +30,10 @@ class CartController extends Controller
           $shipping = 0;
           $tax      = 0; //in percentage %
           $total    = 0;
-          
-        if(!empty(AppHelper::userState()) && !empty($cart['carts']) ){
-            $cart=User::select(['id','first_name'])->with('carts.product')->find(AppHelper::userState()->id)->toArray();
+          $userId=!empty(AppHelper::userState())?AppHelper::userState()->id:null;
+          $ncart=User::select(['id','first_name'])->with('carts.product')->find($userId);
+        if(!empty(AppHelper::userState()) && !empty($ncart->carts) ){
+            $cart = $ncart->toArray();
             $comment=auth()->user()->comments()->get()->toArray();
             if(!empty($comment)) {
               $cart['comment']=$comment[0];
@@ -74,16 +75,41 @@ class CartController extends Controller
      */
     public function store(Request $request)
     {
+        $requestData= $request->except('_token');
+
+        if(empty($requestData) || empty(AppHelper::userState())){
+            return redirect()->back()->with('warning','No items in the cart.');
+         }
+
          $userId = AppHelper::userState()->id;
-         $requestData= $request->except('_token');
          foreach($requestData['cartQty'] as $cartId => $quantity ){
             if( $quantity<1){
-                Cart::where('id',$cartId)->delete();
+                Cart::where('product_id',$cartId)->delete();
+                Comment::where('user_id', $userId)->delete();
             }else{
-              Cart::where('id',$cartId)->update(['pr_quantity'=> $quantity]);
+              Cart::where('product_id',$cartId)->update(['pr_quantity'=> $quantity]);
             }
         }
-         Comment::where('user_id',$userId)->update(['body'=>$requestData['specialNotes']]);
+
+        $cart = Cart::where('user_id',$userId)->first();
+
+        if(!empty($cart)){
+             Comment::updateOrCreate(
+            // Conditions to check for existing record
+            [
+                'user_id' => $userId,
+                'commentable_type' => 'User',
+                'commentable_id' => $userId,
+            ],
+            // Values to insert or update
+            [
+                'body' => $requestData['specialNotes'],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+      }
+
          return redirect()->back()->with('success','Cart Updated Successfully.');
     }
 
@@ -133,8 +159,15 @@ class CartController extends Controller
     }
 
     public function storeOrder(Request $request){
-    $userId= AppHelper::userState()->id;
-    $cart=User::select(['id','first_name'])->with('carts.product')->find($userId)->toArray();
+
+
+     $userId= !empty(AppHelper::userState())?AppHelper::userState()->id:null;
+     $ncart=User::select(['id','first_name'])->with('carts.product')->find($userId);
+
+     if(empty($ncart->carts) || empty(AppHelper::userState())){
+        return redirect()->back()->with('danger','No items in the cart.');
+     }
+     $cart= $ncart->toArray();
     $comment=Comment::where('user_id',$userId)->firstorfail();
     $subtotal=0;
     $taxAmount=0;
@@ -228,6 +261,11 @@ class CartController extends Controller
         }
 
        // Add to Cart
+       $cart = Cart::where('product_id',$data['product_id'])->where('user_id',auth()->user()->id)->first();
+       if(!empty($cart)){
+        Cart::where('product_id',$data['product_id'])->where('user_id',auth()->user()->id)->delete();
+        Comment::where('user_id',auth()->user()->id)->delete();
+       }
         $data['user_id'] = auth()->user()->id;
         Cart::create($data);
 
