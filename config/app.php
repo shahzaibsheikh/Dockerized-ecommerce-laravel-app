@@ -110,6 +110,8 @@ return [
 
     'faker_locale' => 'en_US',
 
+    'supported_locales' => ['en', 'fr', 'es', 'de','ur'],
+
     /*
     |--------------------------------------------------------------------------
     | Encryption Key
@@ -196,7 +198,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\TelescopeServiceProvider::class,
-     
+        App\Providers\LanguageServiceProvider::class,
+
 
     ],
 

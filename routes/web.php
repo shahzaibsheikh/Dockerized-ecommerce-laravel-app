@@ -1,12 +1,11 @@
 <?php
-// use Illuminate\Http\Request;
-
-
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
-// use App\Http\Controllers\test;
 use App\Http\Controllers\ProductController;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\App;
+use App\Providers\LanguageServiceProvider;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -24,9 +23,19 @@ use Illuminate\Support\Facades\DB;
 //      dd(app());
 //     return view('welcome');
 // });
-// Route::get('/', function () {
-//     return view('index_user');
-// })->name('guest');
+Route::get('/debug-locale', function () {
+
+    // dd( __('lang.2') );
+     // Instantiate the LanguageServiceProvider
+     $provider = new LanguageServiceProvider(app());
+
+     // Call the `boot` method directly
+     $provider->boot();
+
+    //  return response()->json([
+    //      'message' => 'LanguageServiceProvider boot method executed successfully.'
+    //  ]);
+})->name('guest');
 
 
 Route::controller(\App\Http\Controllers\HomeController::class)->group(function(){
@@ -38,15 +47,6 @@ Route::controller(\App\Http\Controllers\HomeController::class)->group(function()
 // Route::get('/',[ProductController::class,'index'])->name('products.index');
 Route::get('product/create',[ProductController::class,'create'])->name('products.create');
 Route::post('product/store',[ProductController::class,'store'])->name('product.store');
-
-
-Route::get('getBrandsData',[\App\Http\Controllers\BrandsController::class,'getBrandsData']);
-
-Route::get('getDealersData',[\App\Http\Controllers\BrandsController::class,'getDealersData']);
-
-
-Route::resource('crud',\App\Http\Controllers\CrudOperationsController::class);
-
 
 
 Route::controller(\App\Http\Controllers\AuthenticationController::class)->group(function(){

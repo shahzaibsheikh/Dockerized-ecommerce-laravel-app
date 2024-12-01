@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{{ route('index-home') }}">Shahzaib Store</a>
+        <a class="navbar-brand" href="{{ route('index-home') }}">{{ __( app()->getlocale().'.1') }}</a>
         <!-- Links -->
         <ul class="navbar-nav">
             <li>

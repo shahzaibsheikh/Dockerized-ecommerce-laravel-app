@@ -9,6 +9,6 @@ Hope you are good. Happy Coding.
 <br>
 Regards,
 <br>
-Shahzaib
+{{ __( app()->getlocale().'.1') }}
 <br>
 {{ $tagline }}
