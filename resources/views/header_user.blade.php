@@ -4,8 +4,9 @@
         <!-- Links -->
         <ul class="navbar-nav">
             <li>
-                <form class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <form class="d-flex" method="POST" action="{{route('live-search-websocket')}}">
+                    {{ csrf_field() }}
+                    <input class="form-control me-2" name="product" value="" type="text" placeholder="Search" aria-label="Search">
                     <button class="btn btn-outline-success" type="submit">Search</button>
                 </form>
             </li>

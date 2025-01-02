@@ -9,7 +9,6 @@ use App\Jobs\EmailJob;
 use App\Helpers\AppHelper;
 use Illuminate\Http\Request;
 
-
 class HomeController extends Controller
 {
     public function index(Request $request){

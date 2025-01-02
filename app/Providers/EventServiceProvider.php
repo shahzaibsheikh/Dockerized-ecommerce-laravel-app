@@ -22,7 +22,8 @@ class EventServiceProvider extends ServiceProvider
         ],
         WelcomeEmail::class =>[
            WelcomeEmailListener::class
-        ]
+        ],
+
     ];
 
     /**

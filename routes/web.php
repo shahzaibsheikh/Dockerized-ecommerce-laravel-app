@@ -5,8 +5,7 @@ use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\App;
 use App\Providers\LanguageServiceProvider;
-
-
+use App\Events\MessageNotification;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -35,7 +34,7 @@ Route::get('/debug-locale', function () {
     //  return response()->json([
     //      'message' => 'LanguageServiceProvider boot method executed successfully.'
     //  ]);
-})->name('guest');
+});
 
 
 Route::controller(\App\Http\Controllers\HomeController::class)->group(function(){
@@ -97,3 +96,10 @@ Route::group(['prefix'=>'/admin','middleware'=>['auth.custom'],'controller'=>\Ap
     Route::post('/Order-Status/{order}','updateOrderStatus')->name('update-order-status');
     Route::get('/Order-LineItems/{order}','getLineItems')->name('order-line-items');
 });
+
+
+Route::get('/test-pusher', function(){
+    return view('broadcast.listen');
+});
+
+ Route::post('/pusher-echo',[\App\Http\Controllers\PusherSearchController::class,'index'])->name('live-search-websocket');
