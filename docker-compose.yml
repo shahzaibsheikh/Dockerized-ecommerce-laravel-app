@@ -1,0 +1,62 @@
+version: '3.8'
+
+networks:
+  laravel-lv:
+    driver: bridge
+
+services:
+  nginx:
+    image: nginx:stable-alpine
+    container_name: learnVern_nginx
+    ports:
+      - "8088:80"
+    depends_on:
+      - php
+      - db
+    restart: on-failure
+    volumes:
+      - ./src:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - laravel-lv
+  db:
+    image: mysql:latest
+    container_name: learnVern_mysql
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+       MYSQL_DATABASE: learn_vern
+       MYSQL_USER: shahzaib
+       MYSQL_PASSWORD: 123
+       MYSQL_ROOT_PASSWORD: 123
+       SERVICE_TAG: dev
+       SERVICE_NAME: mysql-learn-vern
+    networks:
+      - laravel-lv
+
+  phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: learnVern_phpmyadmin
+        ports:
+          - "3400:80"
+        depends_on:
+          - db
+        networks:
+          - laravel-lv
+
+  php:
+    container_name: learnVern_PHP
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./src:/var/www/html
+    ports:
+      - "9000:9000"
+    networks:
+       - laravel-lv
+
